@@ -1,0 +1,521 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #5b4d8f 0%, #6b5b95 100%);
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .turquoise-vertical-line {
+            position: absolute;
+            background-color: #4ECDC4;
+            width: 300px;
+            top: 80px;
+            height: calc(100% - 185px);
+            left: 50%;
+            transform: translateX(calc(-50% - 250px));
+            z-index: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+            z-index: 200;
+        }
+
+            .menu-btn:hover {
+                transform: scale(1.1);
+            }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+            .social-icons a {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                color: white;
+                transition: transform 0.3s, background-color 0.3s;
+            }
+
+                .social-icons a:nth-child(1) {
+                    background-color: #4267B2;
+                }
+
+                .social-icons a:nth-child(2) {
+                    background-color: #1DA1F2;
+                }
+
+                .social-icons a:nth-child(3) {
+                    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+                }
+
+                .social-icons a:hover {
+                    transform: translateY(-3px);
+                }
+
+        /* Dropdown Menu Styles */
+        .dropdown-menu {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(30, 25, 50, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+            transition: right 0.4s ease;
+            z-index: 150;
+            padding: 80px 40px 40px;
+            overflow-y: auto;
+        }
+
+            .dropdown-menu.active {
+                right: 0;
+            }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            z-index: 140;
+        }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+            .close-menu:hover {
+                transform: rotate(90deg);
+            }
+
+        .menu-items {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+            .menu-items li {
+                margin-bottom: 25px;
+            }
+
+            .menu-items a {
+                color: white;
+                text-decoration: none;
+                font-size: 20px;
+                font-weight: 400;
+                letter-spacing: 1px;
+                display: block;
+                padding: 10px 0;
+                border-bottom: 2px solid transparent;
+                transition: all 0.3s;
+            }
+
+                .menu-items a:hover {
+                    color: #4ECDC4;
+                    border-bottom-color: #4ECDC4;
+                    padding-left: 10px;
+                }
+
+        .main-container {
+            display: flex;
+            padding: 50px;
+            max-width: 1600px;
+            margin: 0 auto;
+            align-items: center;
+            gap: 80px;
+            position: relative;
+        }
+
+        .hero {
+            flex: 1;
+            position: relative;
+            text-align: center;
+        }
+
+        .hero-title-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+            color: white;
+            padding: 0 40px;
+        }
+
+        .laptop-container {
+            position: relative;
+            max-width: 650px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+
+        .laptop-visualization {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+        }
+
+        .content-wrapper {
+            flex: 0 0 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        .content-section {
+            padding: 0;
+        }
+
+            .content-section h2 {
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                letter-spacing: 3px;
+                color: #B8B5C8;
+            }
+
+            .content-section p {
+                line-height: 1.8;
+                margin-bottom: 20px;
+                color: #E8E6F0;
+            }
+
+        .more-btn {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 2px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid white;
+            transition: all 0.3s;
+        }
+
+            .more-btn:hover {
+                color: #4ECDC4;
+                border-bottom-color: #4ECDC4;
+                transform: translateX(5px);
+            }
+
+        footer {
+            background-color: rgba(20, 20, 20, 0.6);
+            padding: 40px 50px;
+            text-align: center;
+            margin-top: 0;
+            position: relative;
+            z-index: 10;
+        }
+
+            footer p {
+                color: #D0CDD9;
+                line-height: 1.6;
+                position: relative;
+            }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+                gap: 50px;
+            }
+
+            .turquoise-vertical-line {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .content-wrapper {
+                flex: 1;
+                width: 100%;
+                max-width: 600px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .header-right {
+                gap: 15px;
+            }
+
+            .social-icons a {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .main-container {
+                padding: 30px 20px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+                padding: 0 20px;
+            }
+
+            .turquoise-vertical-line {
+                width: 280px;
+                top: 80px;
+            }
+
+            .laptop-container {
+                max-width: 320px;
+            }
+
+            .content-wrapper {
+                gap: 40px;
+            }
+
+            .content-section h2 {
+                font-size: 20px;
+            }
+
+            footer {
+                padding: 30px 20px;
+            }
+
+            .dropdown-menu {
+                width: 280px;
+                right: -280px;
+                padding: 60px 30px 30px;
+            }
+
+            .menu-items a {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="turquoise-vertical-line"></div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Dropdown Menu -->
+    <div class="dropdown-menu" id="dropdownMenu">
+        <button class="close-menu" id="closeMenu">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul class="menu-items">
+            <li><a href="#home">Головна</a></li>
+            <li><a href="#goals">Цілі</a></li>
+            <li><a href="#strategy">Стратегія</a></li>
+            <li><a href="#services">Послуги</a></li>
+            <li><a href="#portfolio">Портфоліо</a></li>
+            <li><a href="#contact">Контакти</a></li>
+        </ul>
+    </div>
+
+    <header>
+        <div class="logo">logo</div>
+        <div class="header-right">
+            <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="social-icons">
+                <a href="#" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <section class="hero" id="home">
+            <div class="hero-title-wrapper">
+                <h1>Data Visualization</h1>
+            </div>
+
+            <div class="laptop-container">
+                    <img src="https://res.cloudinary.com/dgluvw7wd/image/upload/photo_2025-11-11_02-03-29_jifkmq" alt="Data Visualization Laptop" class="laptop-visualization">
+                    <defs>
+                        <linearGradient id="screenGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#2d2550;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1a1535;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+
+                    <rect x="150" y="80" width="300" height="200" fill="url(#screenGlow)" stroke="#4a4070" stroke-width="3" />
+
+                    <line x1="200" y1="250" x2="250" y2="150" stroke="#6b5b95" stroke-width="1" opacity="0.5" />
+                    <line x1="250" y1="150" x2="320" y2="180" stroke="#6b5b95" stroke-width="1" opacity="0.5" />
+                    <line x1="320" y1="180" x2="380" y2="130" stroke="#6b5b95" stroke-width="1" opacity="0.5" />
+
+                    <rect x="280" y="120" width="80" height="50" fill="#1a1535" stroke="#4ECDC4" stroke-width="1" />
+                    <line x1="290" y1="135" x2="350" y2="135" stroke="#4ECDC4" stroke-width="2" opacity="0.7" />
+                    <line x1="290" y1="145" x2="340" y2="145" stroke="#6b5b95" stroke-width="1" opacity="0.5" />
+                    <line x1="290" y1="155" x2="360" y2="155" stroke="#6b5b95" stroke-width="1" opacity="0.5" />
+
+                    <rect x="190" y="190" width="60" height="70" fill="none" stroke="#4a4070" stroke-width="1" />
+                    <rect x="195" y="230" width="10" height="25" fill="#4ECDC4" />
+                    <rect x="210" y="220" width="10" height="35" fill="#6b5b95" />
+                    <rect x="225" y="210" width="10" height="45" fill="#8b7ba8" />
+                    <rect x="240" y="240" width="10" height="15" fill="#4a4070" />
+
+                    <circle cx="220" cy="120" r="3" fill="#4ECDC4" opacity="0.8" />
+                    <circle cx="370" cy="200" r="2" fill="#4ECDC4" opacity="0.6" />
+                    <circle cx="410" cy="160" r="2" fill="#6b5b95" opacity="0.7" />
+
+                    <path d="M 380 240 L 420 260 L 440 220" stroke="#4a4070" stroke-width="1" fill="none" opacity="0.5" />
+
+                    <path d="M 180 280 L 150 320 L 450 320 L 420 280 Z" fill="#c4c4d4" stroke="#a0a0b0" stroke-width="2" />
+                    <ellipse cx="300" cy="300" rx="40" ry="8" fill="#8b8b9b" />
+
+                    <ellipse cx="300" cy="330" rx="140" ry="15" fill="rgba(0,0,0,0.2)" />
+                </vg>
+            </div>
+        </section>
+
+        <div class="content-wrapper">
+            <section class="content-section" id="goals">
+                <h2>01. GOALS</h2>
+                <p>Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
+                <a href="#" class="more-btn">MORE</a>
+            </section>
+
+            <section class="content-section" id="strategy">
+                <h2>02. STRATEGY</h2>
+                <p>Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
+                <a href="#" class="more-btn">MORE</a>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <p>Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenu = document.getElementById('closeMenu');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuLinks = document.querySelectorAll('.menu-items a');
+
+        // Open menu
+        menuBtn.addEventListener('click', function () {
+            dropdownMenu.classList.add('active');
+            menuOverlay.classList.add('active');
+        });
+
+        // Close menu
+        closeMenu.addEventListener('click', function () {
+            dropdownMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+
+        // Close menu when clicking overlay
+        menuOverlay.addEventListener('click', function () {
+            dropdownMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+
+        // Close menu when clicking on menu link
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                dropdownMenu.classList.remove('active');
+                menuOverlay.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
